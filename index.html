@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FleetDash 2.0</title>
+<style>
+:root{--bg:#f5f3ff;--card:#fff;--ink:#0f1f3d;--mute:#6b7a90;--line:#e9e5f5;--side:#0b1a3a;--acc:#7c3aed;--map:#f3f1fa;--road:#fff;--park:#d9eedd;--hi:#fee2e2;--me:#fef3c7;--lo:#dbeafe;--inp:#f7f5fd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120f24;--card:#1b1736;--ink:#e7eefb;--mute:#94a3bb;--line:#2d2750;--map:#16122e;--road:#2a2450;--park:#15301f;--hi:#4a1d24;--me:#4a3a14;--lo:#172a4d;--inp:#16122e}}
+:root[data-theme="dark"]{--bg:#120f24;--card:#1b1736;--ink:#e7eefb;--mute:#94a3bb;--line:#2d2750;--map:#16122e;--road:#2a2450;--park:#15301f;--hi:#4a1d24;--me:#4a3a14;--lo:#172a4d;--inp:#16122e}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:13px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;min-height:100vh}
+aside{width:210px;background:linear-gradient(180deg,#1e1b4b,#3b2a7a);color:#b8c4dc;padding:18px 12px;flex:none;display:flex;flex-direction:column}
+.logo{color:#fff;font-size:21px;font-weight:800;margin:0 8px 20px}.logo span{color:#c4b5fd}
+nav div{padding:10px 12px;border-radius:9px;margin-bottom:3px;display:flex;justify-content:space-between;cursor:pointer}
+nav .on{background:var(--acc);color:#fff}nav b{background:#ef4444;color:#fff;border-radius:99px;padding:0 7px;font-size:11px}
+.sys{margin-top:auto;font-size:12px;padding:8px}.sys i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px}
+main{flex:1;padding:16px 18px;min-width:0}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+header .t{margin-right:auto}h1{font-size:21px;margin:0}.sub{color:var(--mute)}
+.pill,input,select,button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+input{background:var(--inp);width:210px}button{cursor:pointer}button.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+.live{background:#dcfce7;color:#166534;border-color:#bbf7d0;border-radius:99px;font-weight:600}.live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;padding:0}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.k{display:flex;justify-content:space-between;align-items:flex-end}.k small{color:var(--mute)}.k div b{font-size:27px;display:block}
+.k svg{width:90px;height:34px}
+.g2{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1.3fr 1fr 1.2fr;gap:12px}
+@media(max-width:1000px){aside{display:none}.g2,.g3{grid-template-columns:1fr}}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+canvas{width:100%;height:430px;display:block;border-radius:10px;touch-action:none;cursor:grab}
+.chips{display:flex;gap:6px;flex-wrap:wrap;font-size:12px}.chips label{border:1px solid var(--line);border-radius:99px;padding:3px 9px;cursor:pointer;user-select:none}
+.chips input{display:none;width:auto}.chips input:not(:checked)+span{opacity:.35;text-decoration:line-through}
+.leg{color:var(--mute);font-size:12px}
+#al{max-height:430px;overflow:auto}.a{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.a.d{opacity:.45}
+.ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:18px}
+.hi{background:var(--hi)}.me{background:var(--me)}.lo{background:var(--lo)}
+.a button{padding:2px 8px;font-size:11px;margin:4px 4px 0 0}
+#dr{display:none;margin-top:10px;background:var(--inp)}#dr input[type=range]{width:100%;padding:0}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--mute);font-weight:500}
+.tg{padding:1px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.donut{display:flex;align-items:center;gap:14px}.donut svg{width:130px;flex:none}
+.lg div{display:flex;justify-content:space-between;gap:16px;margin:4px 0}
+.bar{height:10px;border-radius:5px;background:var(--acc)}tr[data-id]{cursor:pointer}tr[data-id]:hover{background:var(--inp)}nav div{user-select:none}#mn{display:none}@media(max-width:1000px){#mn{display:block}}
+#ts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:9}#ts div{background:var(--card);border:1px solid var(--line);border-left:4px solid #dc2626;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+</style></head><body>
+<aside><div class="logo">🚚 Fleet<span>Dash</span></div>
+<nav><div class="on" data-p="Overview">🏠 Overview</div><div data-p="Live Fleet">📍 Live Fleet</div><div data-p="Vehicles">🚛 Vehicles</div><div data-p="Geofences">🛡 Geofences</div><div data-p="Alerts">🔔 Alerts <b id="nb">0</b></div><div data-p="Telemetry">📈 Telemetry</div><div data-p="Reports">📄 Reports</div><div data-p="Drivers">👤 Drivers</div><div data-p="Settings">⚙ Settings</div></nav>
+<div class="sys"><i></i>System Online<br><span style="opacity:.6">v2.0.0 · Redis Streams</span></div></aside>
+<main>
+<header><div class="t"><h1 id="h1">Fleet Operations Overview</h1><span class="sub" id="sub">Resilient real-time telemetry (simulated data)</span></div>
+<select id="mn"></select><span class="pill live"><i></i><span id="lag">Live · 0 ms lag</span></span><span class="pill" id="stale">0 stale</span>
+<span class="pill" id="date"></span><input id="q" placeholder="Search vehicle or driver, press Enter"><button id="th">◐</button><button class="av" title="Madhusmita Samal">MS</button></header>
+<section class="kp" id="kp"></section>
+<section class="g2" id="g2">
+<div class="card"><div class="mh"><b>Live Fleet Map</b>
+<div class="chips" id="chips"></div>
+<span><button id="hm">Heatmap</button> <button id="sa">Satellite</button> <button id="gf">+ Geofence</button> <button id="zo">−</button> <button id="zi">+</button> <button id="pz" class="p">Pause</button></span></div>
+<canvas id="c"></canvas><div class="leg" id="hint">Drag to pan · zoom in to see single vehicles (zoomed out they cluster) · click a vehicle for details and replay</div>
+<div class="card" id="dr"></div></div>
+<div class="card"><div class="mh"><b>Alert workflow</b><span><select id="sev"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select> <button id="ra">Resolve all</button></span></div><div id="al"></div></div>
+</section>
+<section class="g3" id="g3">
+<div class="card"><div class="mh"><b>Fleet Activity</b><span id="rg"><button class="p">24H</button> <button>7D</button> <button>30D</button></span></div><svg id="ch" viewBox="0 0 400 170" width="100%"></svg><div class="leg">━ Moving &nbsp; ━ Idle</div></div>
+<div class="card"><b>Vehicle Status</b><div class="donut"><svg viewBox="0 0 100 100" id="dn"></svg><div class="lg" id="lg"></div></div></div>
+<div class="card"><b>Top Vehicles by Distance</b><table id="tp"></table></div>
+</section><section class="card" id="pg" style="display:none"></section></main><div id="ts"></div>
+<script>
+const $=i=>document.getElementById(i),N=1200,W=1000,H=600,c=$('c'),x=c.getContext('2d');
+const names=['Ramesh K.','Suresh P.','Ajay S.','Manoj D.','Prakash R.','Anita M.','Sunil B.','Deepa N.'];
+const ST=['Moving','Idle','Stopped','Alert'],COL=['#16a34a','#f59e0b','#0ea5e9','#dc2626'];
+let V=[],A=[],F=[{n:'Electronic City Zone',x:640,y:470,w:150,h:90}],z=1,cx=500,cy=300,paused=false,sel=null,msgs=0,aid=0,flt=[1,1,1,1],dm=0,p1=null,rpT=null;
+for(let i=0;i<N;i++){const a=Math.random()*6.28,s=.2+Math.random()*.8,r=Math.random();
+V.push({id:'VH-'+(1000+i*3),x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*s,vy:Math.sin(a)*s,m:r<.7?0:r<.88?1:2,last:Date.now(),off:0,spk:0,drv:names[i%8],dist:90+Math.random()*200,fuel:18+Math.random()*82,hot:0,cool:0,inF:{}})}
+const lab=[['Bengaluru',500,290,1],['Yelahanka',280,40],['Whitefield',860,190],['Indiranagar',520,220],['Marathahalli',700,240],['Jayanagar',280,390],['HSR Layout',520,440],['BTM Layout',380,430],['Electronic City',700,540],['Hebbal',450,80],['Bannerghatta Park',220,540]];
+const parks=[[150,470,130,90],[380,330,70,60],[120,180,80,70],[610,90,90,50]];
+let sd=7;const rnd=()=>(sd=(sd*9301+49297)%233280)/233280;
+const roads=Array.from({length:16},()=>[rnd()*W,rnd()*H,rnd()*W,rnd()*H,rnd()*W,rnd()*H]);
+function cl(){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=r.height*d;x.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',cl);cl();
+const sc=()=>c.clientWidth/W*z,tx=p=>(p-cx)*sc()+c.clientWidth/2,ty=p=>(p-cy)*sc()+c.clientHeight/2,wx=p=>(p-c.clientWidth/2)/sc()+cx,wy=p=>(p-c.clientHeight/2)/sc()+cy;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n);
+const stOf=v=>v.hot?3:v.m;
+function raise(sev,t,d,v){const n=Date.now();v.cool=n+CD;if(sev!='Low'){v.hot=n+10000}
+if(sev=='High')toast('🚨 '+t+' · '+v.id);A.unshift({id:++aid,sev,t,d,v:v.id,s:'Open',time:new Date().toLocaleTimeString(),until:0});A.length=Math.min(A.length,50);ra()}
+function tick(){if(paused)return;const n=Date.now();
+for(const v of V){if(v.m==0){v.x+=v.vx*SIM;v.y+=v.vy*SIM;if(v.x<0||v.x>W)v.vx*=-1;if(v.y<0||v.y>H)v.vy*=-1;v.dist+=.003;v.fuel-=.002}
+v.spd=v.m?0:Math.hypot(v.vx,v.vy)*50*(v.spk>n?1.7:1);
+if(v.fuel<15&&!v.lf){v.lf=1;raise('Medium','Low fuel level',v.id+' · '+v.fuel.toFixed(0)+'% remaining',v)}if(v.fuel<5){v.fuel=100;v.lf=0}if(n>v.off){v.last=n;msgs++}if(v.hot&&n>v.hot)v.hot=0;
+if(Math.random()<.001)v.m=Math.random()<.75?0:Math.random()<.7?1:2;
+F.forEach((f,i)=>{const inn=v.x>f.x&&v.x<f.x+f.w&&v.y>f.y&&v.y<f.y+f.h;if(inn&&!v.inF[i]&&n>v.cool)raise('Medium','Geofence breach',v.id+' · Entered '+f.n,v);v.inF[i]=inn})}
+if(sel&&!rpT)sel.tr.push([sel.x,sel.y]),sel.tr.length>300&&sel.tr.shift()}
+setInterval(tick,50);
+setInterval(()=>{if(paused)return;const v=V[Math.random()*N|0],r=Math.random(),n=Date.now();if(n<v.cool)return;
+if(r<.4&&v.m==0){v.spk=n+8000;raise('High','Speed limit exceeded',v.id+' · '+Math.max(LIM+5,Math.round(Math.hypot(v.vx,v.vy)*85))+' km/h (limit '+LIM+')',v)}
+else if(r<.65)raise('High','Engine temperature high',v.id+' · '+(105+Math.random()*12|0)+'°C (normal < 95°C)',v);
+else if(r<.8)v.off=n+12000;else if(v.m==1)raise('Low','Idle for over 30 min',v.id+' · '+v.drv,v)},600);
+function draw(){const w=c.clientWidth,h=c.clientHeight;x.clearRect(0,0,w,h);
+if(sat){x.fillStyle='#1d3b2a';x.fillRect(0,0,w,h)}x.fillStyle=sat?'#2f5d3a':css('--park');parks.forEach(p=>{x.beginPath();x.roundRect(tx(p[0]),ty(p[1]),p[2]*sc(),p[3]*sc(),12);x.fill()});
+x.strokeStyle=sat?'#7a7a66':css('--road');x.lineWidth=Math.max(3,5*z);x.lineCap='round';
+roads.forEach(r=>{x.beginPath();x.moveTo(tx(r[0]),ty(r[1]));x.quadraticCurveTo(tx(r[2]),ty(r[3]),tx(r[4]),ty(r[5]));x.stroke()});
+x.fillStyle=sat?'#f1f1f1':css('--mute');x.textAlign='center';lab.forEach(l=>{x.font=(l[3]?'bold 16px':'11px')+' system-ui';x.fillText(l[0],tx(l[1]),ty(l[2]))});
+F.forEach(f=>{x.fillStyle='rgba(220,38,38,.13)';x.strokeStyle='#dc2626';x.setLineDash([6,4]);x.lineWidth=1.5;x.fillRect(tx(f.x),ty(f.y),f.w*sc(),f.h*sc());x.strokeRect(tx(f.x),ty(f.y),f.w*sc(),f.h*sc());x.setLineDash([]);x.fillStyle='#dc2626';x.font='11px system-ui';x.textAlign='left';x.fillText('🛡 '+f.n,tx(f.x)+5,ty(f.y)+14)});
+if(p1){x.strokeStyle='#7c3aed';x.strokeRect(tx(p1[0]),ty(p1[1]),10,10)}
+if(heat){x.fillStyle='rgba(124,58,237,.09)';for(const v of V){if(!flt[stOf(v)])continue;x.beginPath();x.arc(tx(v.x),ty(v.y),24*Math.sqrt(z),0,6.28);x.fill()}}else if(z<1.8){const g=95/z,m=new Map();
+for(const v of V){const s=stOf(v);if(!flt[s])continue;const k=(v.x/g|0)+','+(v.y/g|0);let e=m.get(k);if(!e)m.set(k,e={n:0,x:0,y:0,a:0});e.n++;e.x+=v.x;e.y+=v.y;if(s==3)e.a++}
+x.textAlign='center';for(const e of m.values()){const px=tx(e.x/e.n),py=ty(e.y/e.n),r=11+Math.sqrt(e.n)*2.4;
+x.globalAlpha=.9;x.fillStyle=e.a?'#dc2626':'#7c3aed';x.beginPath();x.arc(px,py,r,0,6.28);x.fill();x.globalAlpha=1;
+x.fillStyle='#fff';x.font='bold 11px system-ui';x.fillText(e.n,px,py+4)}}
+else for(const v of V){const s=stOf(v);if(!flt[s])continue;const px=tx(v.x),py=ty(v.y);if(px<-9||py<-9||px>w+9||py>h+9)continue;
+x.fillStyle=COL[s];x.beginPath();
+if(s==0)x.arc(px,py,4.5,0,6.28);else if(s==1)x.rect(px-4,py-4,8,8);else if(s==2){x.moveTo(px,py-5.5);x.lineTo(px+5.5,py+4);x.lineTo(px-5.5,py+4)}else{x.moveTo(px,py-7);x.lineTo(px+7,py);x.lineTo(px,py+7);x.lineTo(px-7,py)}x.fill()}
+if(sel){x.strokeStyle='#7c3aed';x.lineWidth=2.5;x.beginPath();sel.tr.forEach((p,i)=>i?x.lineTo(tx(p[0]),ty(p[1])):x.moveTo(tx(p[0]),ty(p[1])));x.stroke();
+const rp=+$('rp').value,p=sel.tr[rp]||[sel.x,sel.y];x.fillStyle='#fff';x.strokeStyle='#0f1f3d';x.lineWidth=3;x.beginPath();x.arc(tx(p[0]),ty(p[1]),8,0,6.28);x.fill();x.stroke()}
+requestAnimationFrame(draw)}
+function pick(v){sel=v;v.tr=Array.from({length:200},(_,k)=>[v.x-v.vx*(200-k),v.y-v.vy*(200-k)]);z=Math.max(z,2.4);cx=v.x;cy=v.y;
+$('dr').style.display='block';$('dr').innerHTML=`<div class="mh"><b>${v.id} · ${v.drv} <span class="tg" id="dst"></span></b><button id="dx">Close</button></div>
+<div class="leg" id="dif"></div><div class="leg" style="margin-top:6px">Replay trail <span id="rt"></span></div>
+<input type="range" id="rp" min="0" max="199" value="199"><button id="pl">▶ Replay</button>`;
+$('dx').onclick=()=>{sel=null;clearInterval(rpT);rpT=null;$('dr').style.display='none'};
+$('rp').oninput=()=>{clearInterval(rpT);rpT=null};
+$('pl').onclick=()=>{clearInterval(rpT);$('rp').value=0;rpT=setInterval(()=>{const r=$('rp');if(+r.value>=r.max){clearInterval(rpT);rpT=null;return}r.value=+r.value+1},40)}}
+function shown(){const v=sel;if(!v)return;const s=stOf(v);$('dst').textContent=ST[s];$('dst').style.cssText=`background:${COL[s]};color:#fff`;
+const nx=F[0]||{n:'none'};$('dif').textContent=`Speed ${Math.round(v.spd)} km/h · ${Date.now()-v.last>3000?'⚠ stale (no ping)':'ping fresh'} · ${v.dist.toFixed(1)} km today · Fuel ${v.fuel.toFixed(0)}% · Next geofence: ${nx.n}`;
+$('rt').textContent=`(−${Math.round((199-$('rp').value)*.05*10)/10}s from now)`}
+let drag=null,moved=0;
+c.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];moved=0;c.setPointerCapture(e.pointerId);c.style.cursor='grabbing'});
+c.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag[0],dy=e.clientY-drag[1];moved+=Math.abs(dx)+Math.abs(dy);cx-=dx/sc();cy-=dy/sc();drag=[e.clientX,e.clientY]});
+c.addEventListener('pointerup',e=>{drag=null;c.style.cursor='grab';if(moved>6)return;const r=c.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+if(dm){const p=[wx(mx),wy(my)];if(!p1){p1=p;return}F.push({n:'Zone '+(F.length+1),x:Math.min(p[0],p1[0]),y:Math.min(p[1],p1[1]),w:Math.abs(p[0]-p1[0])+5,h:Math.abs(p[1]-p1[1])+5});p1=null;dm=0;$('gf').textContent='+ Geofence';return}
+if(z<1.8){cx=wx(mx);cy=wy(my);z=2.4;return}
+let b=null,bd=14;for(const v of V){const d=Math.hypot(tx(v.x)-mx,ty(v.y)-my);if(d<bd&&flt[stOf(v)]){bd=d;b=v}}if(b)pick(b)});
+$('gf').onclick=()=>{dm=1;p1=null;$('gf').textContent='Click 2 corners…'};
+$('zi').onclick=()=>z=Math.min(5,z*1.4);$('zo').onclick=()=>{z=Math.max(1,z/1.4);if(z==1){cx=500;cy=300}};
+$('pz').onclick=e=>{paused=!paused;e.target.textContent=paused?'Resume':'Pause'};
+$('th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark'};
+$('q').onkeydown=e=>{if(e.key!='Enter')return;const s=e.target.value.toLowerCase(),v=V.find(v=>v.id.toLowerCase().includes(s)||v.drv.toLowerCase().includes(s));if(v)pick(v)};
+$('chips').innerHTML=ST.map((s,i)=>`<label><input type=checkbox checked data-i=${i}><span style="color:${COL[i]}">${['●','■','▲','◆'][i]} ${s}</span></label>`).join('');
+$('chips').onchange=e=>flt[e.target.dataset.i]=e.target.checked?1:0;
+$('date').textContent=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+function ra(){const f=$('sev').value,l=A.filter(a=>f=='All'||a.sev==f);
+$('al').innerHTML=l.length?l.map(a=>{const k=a.sev=='High'?'hi':a.sev=='Medium'?'me':'lo';return `<div class="a ${a.s=='Resolved'?'d':''}"><div class="ic ${k}">${a.t[0]=='S'?'⚡':a.t[0]=='E'?'🌡':a.t[0]=='G'?'📍':a.t[0]=='L'?'⛽':'⏸'}</div><div><b>${a.t}</b> <span class="tg ${k}">${a.sev}</span><div class="leg">${a.d}<br>${a.time} · ${a.s}</div>
+<button data-i="${a.id}" data-a="loc">Locate</button>${a.s=='Open'?`<button data-i="${a.id}" data-a="Acknowledged">Ack</button><button data-i="${a.id}" data-a="snz">Snooze</button>`:''}${a.s!='Resolved'?`<button data-i="${a.id}" data-a="Resolved">Resolve</button>`:''}</div></div>`}).join(''):'<div class="leg">No alerts yet. Waiting for events…</div>'}
+$('al').onclick=e=>{const b=e.target.closest('button');if(!b)return;const a=A.find(q=>q.id==b.dataset.i);
+if(b.dataset.a=='loc')pick(V.find(v=>v.id==a.v));else if(b.dataset.a=='snz'){a.s='Snoozed';a.until=Date.now()+15000}else a.s=b.dataset.a;ra()};
+$('sev').onchange=ra;$('ra').onclick=()=>{A.forEach(a=>a.s='Resolved');ra()};
+const hist={a:[],i:[],c:[]},spark=(arr,col)=>{const mn=Math.min(...arr),mx=Math.max(...arr)||1,r=mx-mn||1;return `<svg viewBox="0 0 90 34"><polyline fill="none" stroke="${col}" stroke-width="2" points="${arr.map((v,i)=>(i*90/Math.max(arr.length-1,1)).toFixed(1)+','+(30-(v-mn)/r*26).toFixed(1)).join(' ')}"/></svg>`};
+let rng=24;function chart(){const n=rng==24?24:rng==7?7:30,M=[],I=[];let s=rng;for(let i=0;i<n;i++){M.push(900+Math.sin(i/n*6+s)*350+Math.sin(i*1.7)*90);I.push(380+Math.cos(i/n*5+s)*140)}
+const P=a=>a.map((v,i)=>(i*390/(n-1)+5).toFixed(1)+','+(150-v/2000*140).toFixed(1)).join(' L');
+$('ch').innerHTML=`<path d="M5,150 L${P(M)} L395,150Z" fill="#7c3aed" opacity=".15"/><path d="M${P(M)}" fill="none" stroke="#7c3aed" stroke-width="2.5"/><path d="M${P(I)}" fill="none" stroke="#14b8a6" stroke-width="2.5"/>
+${[0,1000,2000].map(v=>`<text x="0" y="${154-v/2000*140}" font-size="8" fill="#94a3b8">${v}</text>`).join('')}`}
+$('rg').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...$('rg').children].forEach(k=>k.classList.remove('p'));b.classList.add('p');rng=b.textContent=='24H'?24:b.textContent=='7D'?7:30;chart()};
+setInterval(()=>{const n=Date.now(),cnt=[0,0,0,0];let st=0;for(const v of V){cnt[stOf(v)]++;if(n-v.last>3000)st++}
+const op=A.filter(a=>a.s=='Open').length;hist.a.push(cnt[0]);hist.i.push(cnt[1]);hist.c.push(op);for(const k in hist)if(hist[k].length>30)hist[k].shift();
+const K=(t,v,s,col,sub)=>`<div class="card k"><div><small>${t}</small><b>${v}</b><span class="leg">${sub}</span></div>${s}</div>`;
+$('kp').innerHTML=K('Total vehicles',N.toLocaleString(),spark([5,6,6,7,8,8,9],'#7c3aed'),'','↑ '+msgs*2+' msgs/sec')+K('Active now',cnt[0],spark(hist.a,'#16a34a'),'',Math.round(cnt[0]/N*100)+'% of fleet')+K('Idle vehicles',cnt[1],spark(hist.i,'#f59e0b'),'',Math.round(cnt[1]/N*100)+'% of fleet')+K('Critical alerts',op,spark(hist.c,'#dc2626'),'','Requires attention')+K('Low fuel',V.filter(v=>v.fuel<25).length,'','','Under 25% fuel');
+rate=msgs*2;msgs=0;$('nb').textContent=op;$('lag').textContent='Live · '+(paused?'paused':Math.round(120+Math.random()*110)+' ms lag');$('stale').textContent=st+' stale (60s+ no ping)';
+let o=0;$('dn').innerHTML=`<text x="50" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="${css('--ink')}">${N}</text><text x="50" y="60" text-anchor="middle" font-size="7" fill="#94a3b8">Total</text>`+cnt.map((v,i)=>{const l=v/N*251.3,s=`<circle cx="50" cy="50" r="40" fill="none" stroke="${COL[i]}" stroke-width="14" stroke-dasharray="${l} ${251.3-l}" stroke-dashoffset="${-o}" transform="rotate(-90 50 50)"/>`;o+=l;return s}).join('');
+$('lg').innerHTML=cnt.map((v,i)=>`<div><span style="color:${COL[i]}">${['●','■','▲','◆'][i]}</span> ${ST[i]}<b>${v} (${Math.round(v/N*100)}%)</b></div>`).join('');
+$('tp').innerHTML='<tr><th>#</th><th>Vehicle</th><th>Driver</th><th>km</th><th>Status</th></tr>'+[...V].sort((a,b)=>b.dist-a.dist).slice(0,5).map((v,i)=>`<tr><td>${i+1}</td><td>${v.id}</td><td>${v.drv}</td><td>${v.dist.toFixed(1)}</td><td><span class="tg" style="background:${COL[stOf(v)]};color:#fff">${ST[stOf(v)]}</span></td></tr>`).join('');
+A.forEach(a=>{if(a.s=='Snoozed'&&n>a.until)a.s='Open'});ra()},1000);
+
+let cur='Overview',rate=0;
+const PT={Overview:['Fleet Operations Overview','Resilient real-time telemetry (simulated data)'],'Live Fleet':['Live Fleet','Real-time map and alert workflow'],Vehicles:['Vehicles','All vehicles in the fleet'],Geofences:['Geofences','Manage restricted zones'],Alerts:['Alerts','Full alert history and workflow'],Telemetry:['Telemetry Analytics','Throughput and speed distribution'],Reports:['Reports','Fleet summary and export'],Drivers:['Drivers','Per-driver performance'],Settings:['Settings','Alert rules and simulation']};
+$('mn').innerHTML=Object.keys(PT).map(k=>`<option>${k}</option>`).join('');
+const tg=s=>`<span class="tg" style="background:${COL[s]};color:#fff">${ST[s]}</span>`;
+function go(p){cur=p;document.querySelectorAll('nav div').forEach(d=>d.classList.toggle('on',d.dataset.p==p));$('mn').value=p;
+$('h1').textContent=PT[p][0];$('sub').textContent=PT[p][1];
+const o=p=='Overview',l=p=='Live Fleet';$('kp').style.display=o?'':'none';$('g2').style.display=o||l?'':'none';$('g3').style.display=o?'':'none';$('pg').style.display=o||l?'none':'';
+if(o||l){cl();return}
+const ex={Vehicles:'<input id="pgq" placeholder="Filter by ID, driver, status">',Geofences:'<button id="pgn" class="p">+ New geofence</button>',Alerts:'<button id="pga" class="p">Download alerts CSV</button>',Telemetry:'',Reports:'<button id="pgd" class="p">Download CSV</button>',Drivers:'',Settings:''}[p];
+$('pg').innerHTML=`<div class="mh"><b>${PT[p][0]}</b><span>${ex}</span></div><div id="pgb"></div>`;
+if($('pgq'))$('pgq').oninput=upd;
+if($('pgn'))$('pgn').onclick=()=>{go('Live Fleet');dm=1;p1=null;$('gf').textContent='Click 2 corners…'};
+if($('pgd'))$('pgd').onclick=csv;if($('pga'))$('pga').onclick=()=>dl('alerts.csv',['time,severity,alert,details,status',...A.map(a=>[a.time,a.sev,a.t,'"'+a.d+'"',a.s].join(','))].join('\n'));
+if(p=='Settings'){$('pgb').innerHTML=`<div style="display:grid;gap:18px;max-width:520px">
+<label>Speed limit: <b id="slv">${LIM}</b> km/h<input type="range" id="sl" min="30" max="100" value="${LIM}" style="width:100%;padding:0"></label>
+<label>Alert cooldown per vehicle: <b id="scv">${CD/1000}</b> s<input type="range" id="sc" min="10" max="120" value="${CD/1000}" style="width:100%;padding:0"></label>
+<label>Simulation speed: <b id="ssv">${SIM}</b>x<input type="range" id="ss" min="0.5" max="3" step="0.5" value="${SIM}" style="width:100%;padding:0"></label>
+<div class="leg">Changes apply immediately to the live simulation.</div></div>`;
+$('sl').oninput=e=>{LIM=+e.target.value;$('slv').textContent=LIM};$('sc').oninput=e=>{CD=e.target.value*1000;$('scv').textContent=e.target.value};$('ss').oninput=e=>{SIM=+e.target.value;$('ssv').textContent=SIM}}
+upd()}
+let LIM=60,CD=60000,SIM=1,heat=0,sat=0;
+function toast(m){const d=document.createElement('div');d.textContent=m;$('ts').appendChild(d);setTimeout(()=>d.remove(),4000)}
+function dl(f,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download=f;a.click()}
+$('hm').onclick=e=>{heat=!heat;e.target.classList.toggle('p',!!heat)};$('sa').onclick=e=>{sat=!sat;e.target.classList.toggle('p',!!sat)};
+function upd(){const b=$('pgb');if(!b||cur=='Overview'||cur=='Live Fleet'||cur=='Settings')return;let h='';const n=Date.now();
+if(cur=='Vehicles'){const q=$('pgq').value.toLowerCase(),l=V.filter(v=>(v.id+' '+v.drv+' '+ST[stOf(v)]).toLowerCase().includes(q));
+h=`<div class="leg">${l.length} vehicles (showing first 100) · click a row to locate</div><table><tr><th>Vehicle</th><th>Driver</th><th>Status</th><th>Speed</th><th>km today</th><th>Fuel</th><th>Ping</th></tr>`+l.slice(0,100).map(v=>`<tr data-id="${v.id}"><td>${v.id}</td><td>${v.drv}</td><td>${tg(stOf(v))}</td><td>${Math.round(v.spd||0)} km/h</td><td>${v.dist.toFixed(1)}</td><td>${v.fuel.toFixed(0)}%</td><td>${n-v.last>3000?'⚠ stale':'fresh'}</td></tr>`).join('')+'</table>'}
+if(cur=='Geofences')h='<table><tr><th>Zone</th><th>Size</th><th>Vehicles inside</th><th></th></tr>'+F.map((f,i)=>`<tr><td>${f.n}</td><td>${Math.round(f.w)}×${Math.round(f.h)} units</td><td>${V.filter(v=>v.inF[i]).length}</td><td><button data-del="${i}">Delete</button></td></tr>`).join('')+'</table>'+(F.length?'':'<div class="leg">No geofences yet. Use + New geofence.</div>');
+if(cur=='Alerts'){const k=s=>A.filter(a=>a.sev==s&&a.s!='Resolved').length;h=`<div class="leg">Open: High ${k('High')} · Medium ${k('Medium')} · Low ${k('Low')}</div><table><tr><th>Time</th><th>Severity</th><th>Alert</th><th>Details</th><th>Status</th><th></th></tr>`+A.map(a=>`<tr><td>${a.time}</td><td>${a.sev}</td><td>${a.t}</td><td>${a.d}</td><td>${a.s}</td><td>${a.s=='Resolved'?'':`<button data-i="${a.id}" data-a="loc">Locate</button> <button data-i="${a.id}" data-a="Resolved">Resolve</button>`}</td></tr>`).join('')+'</table>'+(A.length?'':'<div class="leg">No alerts yet.</div>')}
+if(cur=='Telemetry'){const mv=V.filter(v=>stOf(v)==0||stOf(v)==3),av=mv.reduce((s,v)=>s+v.spd,0)/(mv.length||1),bk=[0,0,0,0];mv.forEach(v=>bk[Math.min(3,v.spd/20|0)]++);
+const C=(t,v)=>`<div class="card k"><div><small>${t}</small><b>${v}</b></div></div>`;
+h=`<div class="kp">${C('Avg moving speed',av.toFixed(1)+' km/h')}${C('Throughput',rate+' msgs/s')}${C('Stale vehicles',V.filter(v=>n-v.last>3000).length)}${C('Geofences',F.length)}</div><b>Speed distribution (km/h)</b>`+['0–20','20–40','40–60','60+'].map((l,i)=>`<div style="display:flex;gap:10px;align-items:center;margin:8px 0"><span style="width:60px">${l}</span><div class="bar" style="width:${bk[i]/(mv.length||1)*70}%;min-width:2px"></div><span>${bk[i]}</span></div>`).join('')}
+if(cur=='Reports'){const q=[0,0,0,0];V.forEach(v=>q[stOf(v)]++);h='<table><tr><th>Metric</th><th>Value</th></tr><tr><td>Total vehicles</td><td>'+N+'</td></tr>'+ST.map((s,i)=>`<tr><td>${s}</td><td>${q[i]}</td></tr>`).join('')+`<tr><td>Total distance today</td><td>${V.reduce((s,v)=>s+v.dist,0).toFixed(0)} km</td></tr><tr><td>Open alerts</td><td>${A.filter(a=>a.s!='Resolved').length}</td></tr><tr><td>Geofences</td><td>${F.length}</td></tr></table>`}
+if(cur=='Drivers')h='<table><tr><th>Driver</th><th>Vehicles</th><th>Avg km</th><th>Alerts</th><th>Moving now</th></tr>'+names.map(m=>{const l=V.filter(v=>v.drv==m),ids=new Set(l.map(v=>v.id));return `<tr><td>${m}</td><td>${l.length}</td><td>${(l.reduce((s,v)=>s+v.dist,0)/l.length).toFixed(1)}</td><td>${A.filter(a=>ids.has(a.v)).length}</td><td>${l.filter(v=>stOf(v)==0).length}</td></tr>`}).join('')+'</table>';
+b.innerHTML=h}
+function csv(){const r=['id,driver,status,speed_kmh,km_today',...V.map(v=>[v.id,v.drv,ST[stOf(v)],Math.round(v.spd||0),v.dist.toFixed(1)].join(','))].join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'text/csv'}));a.download='fleet_report.csv';a.click()}
+$('pg').onclick=e=>{const b=e.target.closest('button'),r=e.target.closest('tr[data-id]');
+if(b&&b.dataset.del!==undefined){F.splice(+b.dataset.del,1);V.forEach(v=>v.inF={});upd();return}
+if(b&&b.dataset.a){const a=A.find(q=>q.id==b.dataset.i);if(b.dataset.a=='loc'){go('Live Fleet');pick(V.find(v=>v.id==a.v))}else{a.s=b.dataset.a;ra();upd()}return}
+if(r&&!b){go('Live Fleet');pick(V.find(v=>v.id==r.dataset.id))}};
+document.querySelector('nav').onclick=e=>{const d=e.target.closest('div[data-p]');if(d)go(d.dataset.p)};
+$('mn').onchange=e=>go(e.target.value);
+setInterval(upd,2000);
+setInterval(shown,200);chart();ra();draw();
+</script></body></html>
